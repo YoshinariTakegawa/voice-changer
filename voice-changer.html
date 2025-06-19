@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>p5.js Tone.js Voice Changer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</head>
+<body>
+<script>
+let mic, pitchShift;
+
+function setup() {
+  createCanvas(400, 200);
+  textAlign(CENTER, CENTER);
+  textSize(20);
+
+  mic = new Tone.UserMedia();
+  pitchShift = new Tone.PitchShift({
+    pitch: 0,
+    windowSize: 0.1,
+    delayTime: 0
+  }).toDestination();
+
+  mic.connect(pitchShift);
+
+  mic.open().then(() => {
+    console.log('マイク接続成功');
+  }).catch(e => {
+    console.error('マイク接続エラー:', e);
+  });
+}
+
+function draw() {
+  background(220);
+  fill(0);
+  text('Pitch Shift: ' + pitchShift.pitch.toFixed(2), width / 2, height / 2);
+}
+
+function mouseDragged() {
+  pitchShift.pitch = map(mouseX, 0, width, -12, 12); // -12 ～ +12半音（1オクターブ）
+}
+
+function mousePressed() {
+  Tone.start(); // オーディオ開始
+}
+</script>
+</body>
+</html>
